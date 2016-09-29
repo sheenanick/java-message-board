@@ -1,6 +1,7 @@
 import java.util.List;
 import org.sql2o.*;
 import java.util.ArrayList;
+import java.sql.Timestamp;
 
 public class Tag {
   private int id;
@@ -22,6 +23,23 @@ public class Tag {
   public void setName(String _name) {
     name = _name;
     this.update();
+  }
+
+  // Create Functions
+  public static boolean createNewTag(String _name) {
+    // Search for tag of same name. If tag name exists, return false. Else create new tag and return true.
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM tags WHERE name = :name";
+      Tag receivedTag = con.createQuery(sql)
+        .addParameter("name", _name)
+        .executeAndFetchFirst(Tag.class);
+      if(receivedTag == null) {
+        Tag newTag = new Tag(_name);
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 
   // Database Functions
@@ -47,10 +65,23 @@ public class Tag {
 
    public void delete() {
      try(Connection con = DB.sql2o.open()) {
+       String sql = "DELETE FROM topics_tags WHERE tag_id = :id";
+       con.createQuery(sql)
+         .addParameter("id", id)
+         .executeUpdate();
        String sql2 = "DELETE FROM tags WHERE id = :id";
        con.createQuery(sql2)
          .addParameter("id", id)
          .executeUpdate();
+     }
+   }
+
+   public static List<Tag> all() {
+     try(Connection con = DB.sql2o.open()) {
+       String sql = "SELECT * FROM tags";
+       List<Tag> allTags = con.createQuery(sql)
+       .executeAndFetch(Tag.class);
+       return allTags;
      }
    }
  }

@@ -1,0 +1,11 @@
+<h3>User List</h3>
+
+<form class="form-group" action="/users" method="post">
+  <label for="name">User Name:</label><br>
+  <input id="name" type="text" name="name" placeholder="Enter a user name" required><br>
+  <input type="submit" name="submit_user" value="ADD">
+</form>
+
+#foreach($user in $users)
+  <p><a href="users/$user.getId()">$user.getName()</a></p>
+#end

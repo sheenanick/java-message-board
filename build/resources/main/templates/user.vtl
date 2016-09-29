@@ -1,0 +1,7 @@
+<h3>Page for $user.getName()</h3>
+
+#foreach($topic in $topics)
+  $topic.getTitle()
+#end
+
+<p>Delete -> <a href="/users/$user.getId()/delete">X</a><p>

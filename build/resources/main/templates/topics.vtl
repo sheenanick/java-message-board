@@ -1,0 +1,13 @@
+<h3>Topic List</h3>
+
+<form class="form-group" action="/topics" method="post">
+  <label for="title">Title:</label><br>
+  <input id="title" type="text" name="title" placeholder="Enter a topic title" required><br>
+  <label for="message">Message:</label><br>
+  <input id="message" type="text" name="message" placeholder="Topic Content" required><br>
+  <input type="submit" name="submit_user" value="ADD">
+</form>
+
+#foreach($topic in $topics)
+  <a href="/topics/$topic.getId()"><p>$topic.getTitle()</p></a>
+#end

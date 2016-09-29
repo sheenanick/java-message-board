@@ -1,12 +1,10 @@
 import java.util.List;
 import org.sql2o.*;
 import java.util.ArrayList;
-import java.sql.Timestamp;
 
 public class User {
   private int id;
   private String name;
-  private Timestamp date_registered;
 
   public User(String _name) {
     name = _name;
@@ -19,9 +17,6 @@ public class User {
   }
   public String getName() {
     return name;
-  }
-  public Timestamp getDate() {
-    return date_registered;
   }
 
   public void setName(String _name) {
@@ -39,6 +34,26 @@ public class User {
     }
   }
 
+  public static List<Post> allPostsByUser(int id) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM posts WHERE user_id = :user_id";
+      List<Post> allPosts = con.createQuery(sql)
+        .addParameter("user_id", id)
+        .executeAndFetch(Post.class);
+        return allPosts;
+    }
+  }
+
+  public static List<Topic> allTopicsByUser(int id) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM topics WHERE user_id = :user_id";
+      List<Topic> allTopics = con.createQuery(sql)
+        .addParameter("user_id", id)
+        .executeAndFetch(Topic.class);
+        return allTopics;
+    }
+  }
+
   public List<Topic> allTopicsByTag(String _tagName) {
     try(Connection con = DB.sql2o.open()) {
       String sql = "SELECT topics.* FROM topics JOIN topics_tags ON (topics.id = topics_tags.topic_id) JOIN tags ON (tags.id = topics_tags.tag_id) WHERE tags.name = :name";
@@ -49,39 +64,8 @@ public class User {
     }
   }
 
-  // Add Functions
-  public void addTagToTopic(int _topic_id, String _tagName) {
-    boolean check = this.createNewTag(_tagName);
-
-    try(Connection con = DB.sql2o.open()) {
-      String sql = "SELECT * FROM tags WHERE name = :name";
-      Tag receivedTag = con.createQuery(sql)
-        .addParameter("name", _tagName)
-        .executeAndFetchFirst(Tag.class);
-      String sql = "INSERT INTO topics_tags (tag_id, topic_id) VALUES (:tag_id, :topic_id)";
-      con.createQuery(sql)
-        .addParameter("topic_id", _topic_id)
-        .addParameter("tag_id", receivedTag.getId())
-        .executeUpdate();
-    }
-  }
-
   // Create Functions
-  public boolean createNewTag(String _name) {
-    // Search for tag of same name. If tag name exists, return false. Else create new tag and return true.
-    try(Connection con = DB.sql2o.open()) {
-      String sql = "SELECT * FROM tags WHERE name = :name";
-      Tag receivedTag = con.createQuery(sql)
-        .addParameter("name", _name)
-        .executeAndFetchFirst(Tag.class);
-      if(receivedTag == null) {
-        Tag newTag = new Tag(_name);
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
+
 
   public void createNewTopic(String _title, String _message) {
     Topic newTopic = new Topic(id, _title, _message);
@@ -92,9 +76,19 @@ public class User {
   }
 
   // Database Functions
+  public static User find(int _id) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM users where id=:id";
+      User user = con.createQuery(sql)
+        .addParameter("id", _id)
+        .executeAndFetchFirst(User.class);
+      return user;
+    }
+  }
+
   public void save() {
      try(Connection con = DB.sql2o.open()) {
-       String sql = "INSERT INTO users (name, date_registered) VALUES (:name, now())";
+       String sql = "INSERT INTO users (name) VALUES (:name)";
        id = (int) con.createQuery(sql, true)
          .addParameter("name", name)
          .executeUpdate()

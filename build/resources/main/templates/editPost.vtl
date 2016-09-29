@@ -1,0 +1,7 @@
+<h1>Edit Post:</h1>
+
+<form class="form-group" action="/topics/$post.getTopicId()/posts/$post.getId()/edit" method="post">
+  <label for="message">Post message:</label><br>
+  <input id="message" type="text" name="message" value="$post.getMessage()" required><br>
+  <input type="submit" name="edit_post" value="Edit">
+</form>

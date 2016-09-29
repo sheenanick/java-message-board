@@ -1,0 +1,21 @@
+<h1>$topic.getTitle()</h1>
+<h3>$topic.getMessage()</h3>
+
+<form class="form-group" action="/topics/$topic.getId()/posts" method="post">
+  <label for="message">Post message:</label><br>
+  <input id="message" type="text" name="message" placeholder="Enter a post message" required><br>
+  <input type="submit" name="submit_post" value="ADD">
+</form>
+
+#foreach($post in $posts)
+  <p>$post.getMessage()</p>
+  #if($post.getUserId() == $user)
+    <p><a href="/topics/$topic.getId()/posts/$post.getId()/delete">Delete Post</a></p>
+    <p><a href="/topics/$topic.getId()/posts/$post.getId()/edit">Edit Post</a></p>
+  #end
+#end
+
+#if($topic.getUserId() == $user)
+  <p><a href="/topics/$topic.getId()/delete">Delete Topic</a></p>
+  <p><a href="/topics/$topic.getId()/edit">Edit Topic</a></p>
+#end

@@ -10,12 +10,6 @@ public class UserTest {
   @Rule
   public DatabaseRule database = new DatabaseRule();
 
-  @Test
-  public void addTagToTopic_addsToJoinTable() {
-    User testUser = new User("justin");
-    
-    testUser.addTagToTopic()
-  }
 
 
 }

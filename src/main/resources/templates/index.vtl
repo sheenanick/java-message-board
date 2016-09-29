@@ -1,0 +1,15 @@
+<h2>Main Page</h2>
+
+#if($users.size() != 0 && $user.length() == 0)
+<p>Sign In</p>
+<form action="/users/:id/signin" method="post">
+  <select id='user_id' name='user_id' type='text'>
+    #foreach($user in $users)
+      <option value="$user.getId()">$user.getName()</option>
+    #end
+  </select>
+  <button type="submit" class="btn">Sign In</button>
+</form>
+#end
+
+<a href="/users">User List</a> / <a href="/tags">Tag List</a> / <a href="/topics">Topic List</a>
